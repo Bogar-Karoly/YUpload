@@ -12,6 +12,7 @@
         <script src="https://kit.fontawesome.com/44af24657a.js" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-        <script src="<?php echo URL_ROOT?>/public/javascript/main.js"></script>
+        <script src="<?php echo URL_ROOT?>/public/javascript/api.js"></script>
+
     </head>
     <body>

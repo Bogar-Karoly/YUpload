@@ -1,40 +1,96 @@
+:root {
+    --background: #202024;
+    --main-grey: rgba(17, 17, 17, 0.9);
+    --secondary-grey: rgba(17, 17, 17, 0.9);
+    --light-grey: #3c3c44;
+    --gold: #965f33;
+    --offWhite: #e6e6e6;
+    --hover: rgba(255, 255, 255, 0.25);
+  }
 body, html {
     margin: 0;
     padding: 0;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    overflow-x: hidden;
+}
+.container {
+    padding-top: 40px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 nav {
-    background-color: green;
-    overflow: hidden;
-    border: 1px solid black;
+    left: auto;
+    right: 0px;
 
-    height: 50px;
+    text-align: justify;
+
+    width: 500px;
+    background-color: green;
+
+    border-bottom-left-radius: 20px;
+
+    position: fixed;
+
+    border: 1px solid red;
 }
 nav ul {
+    
     margin: 0;
     padding: 0;
     text-align: center;
     list-style: none;
     border: 1px solid red;
-} 
+}
 nav a {
-
-    height: 100%;
-    float: left;
+    height: 50px;
+    float: right;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    border: 1px solid purple;
-
-    display: block;
+    border: 1px solid red;
 
     padding: 0px 5px 0px 5px;
     text-decoration: none;
-    font-size: 40px;
+    font-size: 30px;
 }
-.btn-right {
-    float: right;
-    font-size: 10px;
-    
+.btn-container {
+    border: 2px dashed black;
+    margin: 0 auto;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+
 }
-i {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+.icon {
+    float: left;
 }
+.test {
+    border: 2px dashed #444;
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+    /* just for demo */
+    min-width: 612px;
+}
+.title {
+    cursor: pointer;
+    background-color: purple;
+  
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 30px;
+    border-radius: 10px;
+  
+  }
+  .detail, .title {
+    display: inline-block;
+  }
+  .detail {
+    background-color: purple;
+    max-width: 0;
+    overflow: hidden;
+    transition: max-width 0.2s ease-out;
+    /*transition: width 600ms ease-out, height 600ms ease-out;*/
+  }

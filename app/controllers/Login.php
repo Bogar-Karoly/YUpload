@@ -2,16 +2,107 @@
 
 class Login extends Controller{
 
-    public $error = [
-        'username' => '',
-        'email' => '',
-        'password' => '',
-        'passwordRepeat' => ''
-    ];
+    public $error = [];
 
     public function __construct() {
         $this->userModel = $this->model('LoginModel');
-        //echo 'as';
+    }
+
+    private function sendPasswordRecovery($email, $password) {
+        $subject = 'Password Recovery';
+        $message = '<p>Your new password: <b>'.$password.'</b></p>';
+
+        $header = 'From: myaltarmy@gmail.com \r\n';
+        $header .= 'MINE-VERSION: 1.0'.'\r\n';
+        $header .= 'Content-type:text/html;charset:UTF-8'.'\r\n';
+
+        if(mail($email,$subject,$message,$header)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function passwordRecovery() {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = trim($_POST['email']);
+
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            
+            if(empty($email)) {
+                $this->error['passRecovery'] = 'Email cannot be empty!';
+                //error
+            }
+            else if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
+                $this->error['passRecovery'] = 'Invalid Email Address!';
+            }
+            else if(!$this->userModel->emailExist($email)) {
+                $this->error['passRecovery'] = 'Email doesn\'t exists!';
+            }
+
+            if(empty($this->error)) {
+                $newPassword = '';
+
+                for($i = 0; $i < 8; $i++) {
+                    $newPassword .= $characters[rand(0, strlen($characters)-1)];
+                }
+
+                $hashedPassword = password_hash($newPassword,PASSWORD_DEFAULT);
+                
+                if($this->userModel->setNewPassword($email,$hashedPassword))  {
+                    if($this->sendPasswordRecovery($email,$newPassword)) {
+                        $this->view('Verification',null);
+                        exit();
+                    }
+                    else{
+                        $this->error['error1'] = 'error1';
+                    }
+                }
+                else{
+                    $this->error['error2'] = 'error2';
+                }
+            }
+        }
+        else {
+            $this->error['error3'] = 'error3';
+        }
+        $this->view('PasswordRecovery',$this->error);
+    }
+
+    public function confirmEmail($data) {
+
+        if(empty($data)) {
+            $this->error['confirmError'] = 'Empty link';
+        }
+        else if(!$this->userModel->verify($data)) {
+            $this->error['confirmError'] = 'Verification failed';
+        }
+
+        if(empty($this->error)) {
+            //success
+
+            $this->view('VerificationResult',null);
+        }
+        else {
+            $this->view('VerificationResult',$this->error);
+        }
+
+    }
+
+    private function sendVerification($vkey, $email) {
+        //the method:
+
+        //params
+        $subject = 'Email Verifictaion';
+        $message = '<a href="'.URL_ROOT.'/login/confirmEmail/'.$vkey.'">VERIFY</a>';
+
+        $header = 'From: myaltarmy@gmail.com \r\n';
+        $header .= 'MINE-VERSION: 1.0'.'\r\n';
+        $header .= 'Content-type:text/html;charset:UTF-8'.'\r\n';
+
+        if(mail($email,$subject,$message,$header)) {
+            return true;
+        }
+        return false;
     }
 
     public function registration() {
@@ -58,7 +149,7 @@ class Login extends Controller{
                 $this->error['password'] = "Password cannot be empty!";
             }
             else if(strlen($data['password']) < 8) {
-                $this->error['password'] = "Password must be atleast three character long!";
+                $this->error['password'] = "Password must be atleast eight character long!";
             }
             else if(preg_match($passwordValidation,$data['password'])) {
                 $this->error['password'] = "Password must contains atleast one number!";
@@ -73,12 +164,20 @@ class Login extends Controller{
             }
 
             //check for errors
-            if(empty($this->error['password']) && empty($this->error['email']) && empty($this->error['username']) && empty($this->error['passwordRepeat'])) {
+            if(empty($this->error)) {
                 //hash password
                 $data['password'] = password_hash($data['password'],PASSWORD_DEFAULT);
-                
+                //verification key
+                $data['vkey'] = md5(time().$data['username']);
+
                 if($this->userModel->registration($data)) {
-                    header('Location: '.URL_ROOT.'/Home/index');
+                    //send email on success
+                    if($this->sendVerification($data['vkey'],$data['email'])) {
+                        $this->view('Verification',$data);
+                        //$this->view('EmailVerification',$data);
+                        header('Location: '.URL_ROOT.'/Home/index');
+                    }
+                    //error
                 }
                 else {
                     die('Something went wrong!');
@@ -103,11 +202,24 @@ class Login extends Controller{
             if(empty($data['password'])) {
                 $this->error['password'] = 'Please enter the password!';
             }
-            if(empty($this->error['password']) && empty($this->error['email'])) {
+            if(empty($this->error)) {
                 $result = $this->userModel->login($data);
 
                 if($result) {
-                    $this->createSession($result);
+                    print_r($result);
+                    if($result['Verified'] == true) {
+                        $this->createSession($result);
+                    } 
+                    else 
+                    {
+                        if(!$this->sendVerification($result['Vkey'],$result['Email'])) {
+                            $this->view('Verification',null);
+                        }
+                        else
+                        {
+                            header('Location: '.URL_ROOT.'/home/index');
+                        }
+                    }
                 }
                 else {
                     $this->error['email'] = 'Email or password incorrect! Please try again!';
@@ -120,7 +232,7 @@ class Login extends Controller{
                 'password' => ''
             ];
         }
-        $this->view('Home',$this->error);
+        $this->view('Signin',$this->error);
     }
 
     public function createSession($userData) {

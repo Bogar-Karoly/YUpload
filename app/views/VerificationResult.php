@@ -1,13 +1,19 @@
 <?php require APP_ROOT.'/views/includes/Header.php'; ?>
 <?php require APP_ROOT.'/views/includes/Navigation.php'; ?>
 
-<div id="image-container" class="container">
-    <h1>Home Page</h1>
-</div>
-<!--
-asd<img src="" id="img">asd
-<img src="http://localhost/upload/app/images/42.jpg">
--->
+<?php
+
+if(isset($data['confirmError'])) {
+    ?>
+        <p>Unsuccessful Verification!</p>
+    <?php
+} else {
+    ?>
+        <p>Successful verification</p>
+    <?php
+}
+
+?>
 
 
 <?php require APP_ROOT.'/views/includes/Footer.php'; ?>

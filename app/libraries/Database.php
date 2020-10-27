@@ -15,8 +15,20 @@ class Database {
         $this->conn = new mysqli($host,$user,$pass,$name) or $this->error ='The {$this->name} database does not exists!';
     }
 
+    public function resultRows() {
+        return mysqli_fetch_row($this->stmt->get_result());
+    }
+
+    public function lastInsert() {
+        return $this->stmt->insert_id;
+    }
+
     public function result() {
         return mysqli_fetch_assoc($this->stmt->get_result());
+    }
+
+    public function resultAll() {
+        return mysqli_fetch_all($this->stmt->get_result());
     }
 
     public function execute() {
