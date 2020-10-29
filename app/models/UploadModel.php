@@ -9,7 +9,7 @@ class UploadModel {
     }
 
     public function loadImages($num) {
-        $sql = 'SELECT Id, Ext FROM gallery WHERE Visibility = "Public" ORDER BY Id DESC LIMIT ?,?';
+        $sql = 'SELECT g.Id, g.Ext, g.Name, g.Downloads, u.Username FROM gallery g RIGHT JOIN user u ON g.UserId = u.Id WHERE Visibility = "Public" ORDER BY Id DESC LIMIT ?,?';
         
         $this->db->query($sql);
         $this->db->bind($num);
@@ -21,9 +21,6 @@ class UploadModel {
         }
         return false;
     }
-
-
-
 
     public function doesTagExist($tag) {
         $sql = 'SELECT Id FROM tags WHERE tolower(Name) = tolower(?);';

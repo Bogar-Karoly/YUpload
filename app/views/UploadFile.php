@@ -12,7 +12,10 @@
         <input type="file" accept=".jpg, .jpeg, .png, .gif" name="imagefile" placeholder="">
         <input type="text"  name="name" placeholder="Image name...">
         <input type="text"  name="tags" placeholder="tags...">
-        <input type="text"  name="visibility" placeholder="visibility...">
+        <label for="private">Private</label>
+        <input type="radio" id="private" name="visibility" value="Private" checked>
+        <label for="public">Public</label>
+        <input type="radio" id="public" name="visibility" value="Public">
 
         <button id="submit" type="submit" value="submit">Send</button>
     </form>

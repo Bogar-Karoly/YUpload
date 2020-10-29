@@ -1,11 +1,12 @@
 $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() == $(document).height()) {
-        var count = getNumberOfImg();
+        var count = getNumberOfImg()+6;
+        console.log('log1');
         $.ajax({
             type: 'POST',
             url: 'index.php?url=api/image/getImages',
             dataType: 'json',
-            data: {start: count, end: count+2},
+            data: {start: count, end: count},
             success: function(data) {
                 console.log('got the data1');
                 generateImages(data);
@@ -17,15 +18,17 @@ $(window).scroll(function() {
     }
 });
 
-$(window).on('load',function() {
+$(document).ready(function() {
 
     console.log('log3');
+
     $.ajax({
         type: 'POST',
         url: 'index.php?url=api/image/getImages',
         dataType: 'json',
-        data: {start: 0, end: 2},
+        data: {start: 0, end: getWindowSize()},
         success: function(data) {
+            console.info(data);
             generateImages(data);
         },
         error: function(e) {

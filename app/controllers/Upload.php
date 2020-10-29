@@ -11,10 +11,13 @@ class Upload extends Controller {
     public function uploadFile() {
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            //$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
             $filename = $_FILES['imagefile']['name'];
-            //$ext = explode('.',trim($_POST['file']));
+
+            error_reporting(0);
+
             $var = strtolower(end(explode('.',$filename)));
+            
             $data = [
                 'name' => $_POST['name'],
                 'ext' => $var,
@@ -63,7 +66,7 @@ class Upload extends Controller {
                             $this->uploadModel->addTags($this->uploadModel->getTagId($value),$imageId);
                         }
                     }
-                    if(move_uploaded_file($_FILES['imagefile']['tmp_name'],'../public/images/'.$imageId.'.'.$data['ext'])) {
+                    if(!move_uploaded_file($_FILES['imagefile']['tmp_name'],'../public/images/'.$imageId.'.'.$data['ext'])) {
                         $this->error['save'] = 'couldnt save it';
                     }
                     $this->view('UploadFile', $this->error);

@@ -206,7 +206,6 @@ class Login extends Controller{
                 $result = $this->userModel->login($data);
 
                 if($result) {
-                    print_r($result);
                     if($result['Verified'] == true) {
                         $this->createSession($result);
                     } 

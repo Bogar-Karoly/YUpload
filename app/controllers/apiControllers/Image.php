@@ -11,20 +11,22 @@ class Image extends Controller {
 
     public function getImages() {
 
-        //$new = json_decode($_POST['start']);
         $data = array(json_decode($_POST['start']), json_decode($_POST['end']));
 
         $result = $this->uploadModel->loadImages($data);
 
-        //$image = file_get_contents($result['Id'].'.'.$result['Ext'],'../app/images/'.$result['Id'].'.'.$result['Ext']);
-        $dirArray = [];
+        $dataArray = [];
         foreach($result as $value) {
-            $temp = 'http://localhost/upload/images/'.strval($value[0]).'.'.strval($value[1]);
-            array_push($dirArray,$temp);
+            $temp = [];
+            
+            $temp['Url'] = 'http://localhost/upload/images/'.strval($value[0]).'.'.strval($value[1]);
+            $temp['Name'] = strval($value[2]);
+            $temp['Downloads'] = strval($value[3]);
+            $temp['Username'] = strval($value[4]);
+
+            array_push($dataArray,$temp);
         }
-        //$dir = 'http://localhost/upload/images/'.$result['Id'].'.'.$result['Ext'];
-        //$coded = base64_encode($image);
-        $json = json_encode($dirArray);
+        $json = json_encode($dataArray);
 
         echo $json;
     }
