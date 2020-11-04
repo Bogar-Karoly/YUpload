@@ -15,7 +15,7 @@
                 </div>
                 <div class="btn-container">
                     <div class="title">
-                        <a href="<?php echo URL_ROOT; ?>/profile"><i class="fas fa-user-circle fa-1x"></i></a>
+                        <a href="<?php echo URL_ROOT; ?>/home/profile"><i class="fas fa-user-circle fa-1x"></i></a>
                     </div>
                     <div class="detail">
                         PROFILE

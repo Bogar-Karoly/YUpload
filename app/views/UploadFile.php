@@ -11,7 +11,7 @@
     <form action="<?php echo URL_ROOT; ?>/upload/uploadFile" method="POST" enctype="multipart/form-data">
         <input type="file" accept=".jpg, .jpeg, .png, .gif" name="imagefile" placeholder="">
         <input type="text"  name="name" placeholder="Image name...">
-        <input type="text"  name="tags" placeholder="tags...">
+        <!--<input type="text"  name="tags" placeholder="tags...">-->
         <label for="private">Private</label>
         <input type="radio" id="private" name="visibility" value="Private" checked>
         <label for="public">Public</label>

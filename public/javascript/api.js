@@ -1,4 +1,6 @@
+
 $(window).scroll(function() {
+    
     if($(window).scrollTop() + $(window).height() == $(document).height()) {
         var count = getNumberOfImg()+6;
         console.log('log1');
@@ -20,8 +22,6 @@ $(window).scroll(function() {
 
 $(document).ready(function() {
 
-    console.log('log3');
-
     $.ajax({
         type: 'POST',
         url: 'index.php?url=api/image/getImages',
@@ -30,6 +30,7 @@ $(document).ready(function() {
         success: function(data) {
             console.info(data);
             generateImages(data);
+
         },
         error: function(e) {
             console.log(e);

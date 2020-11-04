@@ -9,6 +9,28 @@ class Image extends Controller {
         $this->uploadModel = $this->model('UploadModel');
     }
 
+    public function myImages() {
+
+        $data = array(json_decode($_POST['start']), json_decode($_POST['end']));
+
+        $result = $this->uploadModel->loadMyImages($data);
+
+        $dataArray = [];
+
+        foreach($result as $value) {
+            $temp = [];
+
+            $temp['Url'] = 'http://localhost/upload/images/'.strval($value[0]).'.'.strval($value[1]);
+            $temp['Name'] = strval($value[2]);
+            $temp['Downloads'] = strval($value[3]);
+
+            array_push($dataArray,$temp);
+        }
+        $json = json_encode($dataArray);
+
+        echo $json; 
+    }
+
     public function getImages() {
 
         $data = array(json_decode($_POST['start']), json_decode($_POST['end']));
@@ -30,9 +52,10 @@ class Image extends Controller {
 
         echo $json;
     }
+    
     public function index() {
-        $data = 'new data';
-        echo $data;
+        //echo json_encode('alma');
+        echo json_encode($_SESSION['username']);
     }
 }
 

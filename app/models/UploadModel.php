@@ -8,6 +8,20 @@ class UploadModel {
         $this->db = new Database;
     }
 
+    public function loadMyImages($data) {
+        $sql = 'SELECT g.Id, g.Ext, g.Name, g.Downloads, u.Username FROM gallery g RIGHT JOIN user u ON g.UserId = u.Id WHERE u.Id = '.$_SESSION['Id'].' ORDER BY Id DESC LIMIT ?,?';
+
+        $this->db->query($sql);
+        $this->db->bind($data);
+
+        if($this->db->execute()) {
+            if($result = $this->db->resultAll()) {
+                return $result;
+            }
+        }
+        return false;
+    }
+
     public function loadImages($num) {
         $sql = 'SELECT g.Id, g.Ext, g.Name, g.Downloads, u.Username FROM gallery g RIGHT JOIN user u ON g.UserId = u.Id WHERE Visibility = "Public" ORDER BY Id DESC LIMIT ?,?';
         

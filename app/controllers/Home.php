@@ -1,16 +1,12 @@
 <?php
 
 class Home extends Controller {
-    public function __construct() {
-        //$this->userModel = $this->model('User');
-    }
 
     public function index() {
-        $data = [
-            'title' => 'Home page'
-        ];
-
-        $this->view('Home', $data);
+        $this->view('Home', null);
+    }
+    public function profile() {
+        $this->view('Profile', null); //or header
     }
 }
 

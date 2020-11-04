@@ -226,10 +226,9 @@ class Login extends Controller{
             }
         }
         else {
-            $data = [
-                'email' => '',
-                'password' => ''
-            ];
+            if(isLoggedIn()) {
+                header('Location: '.URL_ROOT.'/home/index');
+            }
         }
         $this->view('Signin',$this->error);
     }

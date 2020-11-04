@@ -62,8 +62,8 @@ function generateImages(data) {
         th1.id = "imageName";
 
         var td2 = document.createElement("td");
-        td2.width = "200px";
-        td2.height = "200px";
+        td2.width = 200;
+        td2.height = 200;
         td2.colSpan = 2;
         td2.appendChild(image);
 
@@ -119,12 +119,14 @@ function generateImages(data) {
         */
         //document.getElementById("images").appendChild(div);
     });
+    console.log('resize');
 
     var imgElements = document.getElementsByTagName("img");
 
     Array.from(imgElements).forEach(element => {
         var width = element.width;
         var height = element.height;
+        console.log(width);
         
         var maxWidth = 200;
         var maxHeight = 200;
@@ -140,8 +142,35 @@ function generateImages(data) {
             element.height = maxHeight;
             element.width = maxWidth;
         }
+        //console.log(element.height);
     });
 }
+
+(function() {
+    var imgElements = document.getElementsByTagName("img");
+
+    Array.from(imgElements).forEach(element => {
+        var width = element.width;
+        var height = element.height;
+        console.log(width);
+        
+        var maxWidth = 200;
+        var maxHeight = 200;
+
+        if(height > width) {
+            element.height = maxHeight;
+            element.width = maxWidth / (height / width);
+            
+        } else if(width > height) {
+            element.width = maxWidth;
+            element.height = maxHeight / (width / height);
+        }else {
+            element.height = maxHeight;
+            element.width = maxWidth;
+        }
+        //console.log(element.height);
+    });
+});
 
 function getNumberOfImg() {
     var imgElements = document.getElementsByTagName("img");
