@@ -11,7 +11,8 @@
     
     border-radius: 10px;
 
-    border: 2px solid rgb(65, 19, 95);;
+    border: 2px solid rgb(65, 19, 95);
+    background-color: rgb(65, 19, 95);
 
     /*background-color: burlywood;*/
     display: inline-block;
@@ -42,6 +43,7 @@ table {
     width: 100%;
     height: 100%; 
     color: chartreuse;
+    background-color: rgb(65, 19, 95);
 }
 form {
     background-color: blanchedalmond;

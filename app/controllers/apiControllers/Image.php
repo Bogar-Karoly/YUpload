@@ -23,6 +23,7 @@ class Image extends Controller {
             $temp['Url'] = 'http://localhost/upload/images/'.strval($value[0]).'.'.strval($value[1]);
             $temp['Name'] = strval($value[2]);
             $temp['Downloads'] = strval($value[3]);
+            
 
             array_push($dataArray,$temp);
         }

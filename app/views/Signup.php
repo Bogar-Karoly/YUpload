@@ -3,6 +3,7 @@
 
 <div class="container">
     <h1>Sign up Page</h1>
+    <div class="errors">
     <?php 
     if(isset($data)) {
         if(!empty($data)) {
@@ -10,6 +11,7 @@
         }
     }
     ?>
+    </div>
     <form action="<?php echo URL_ROOT; ?>/login/registration" method="POST">
         <input type="text" name="username" placeholder="Username">
         <input type="text" name="email" placeholder="Email address">

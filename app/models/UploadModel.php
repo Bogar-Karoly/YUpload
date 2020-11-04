@@ -9,7 +9,7 @@ class UploadModel {
     }
 
     public function loadMyImages($data) {
-        $sql = 'SELECT g.Id, g.Ext, g.Name, g.Downloads, u.Username FROM gallery g RIGHT JOIN user u ON g.UserId = u.Id WHERE u.Id = '.$_SESSION['Id'].' ORDER BY Id DESC LIMIT ?,?';
+        $sql = 'SELECT g.Id, g.Ext, g.Name, g.Downloads, u.Username FROM gallery g RIGHT JOIN user u ON g.UserId = u.Id WHERE u.Id = '.$_SESSION['userId'].' ORDER BY Id DESC LIMIT ?,?';
 
         $this->db->query($sql);
         $this->db->bind($data);

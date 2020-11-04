@@ -39,10 +39,10 @@ class Database {
         $param = '';
         foreach ($data as $key => $value) {
             switch($value) {
-                //case is_bool($value): $param = PDO::PARAM_BOOL; break;
+                //case is_bool($value): $param = ; break;
                 case is_double($value): $param .= 'd'; break;
                 case is_int($value): $param .= 'i'; break;
-                //case is_null($value): $param .= PDO::PARAM_NULL; break;
+                //case is_null($value): $param .= ; break;
                 default: $param .= 's'; break;
             }
         }

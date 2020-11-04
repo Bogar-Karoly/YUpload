@@ -11,7 +11,7 @@ class LoginModel {
     public function setNewPassword($email,$password) {
         $sql = 'UPDATE user SET Password = ? WHERE Email = ?;';
 
-        $array = [$password,$email];
+        $array = array($password,$email);
 
         $this->db->query($sql);
         $this->db->bind($array);
@@ -25,8 +25,7 @@ class LoginModel {
     public function verify($vkey) {
         $sql = 'SELECT Vkey FROM user WHERE Verified = false AND Vkey = ?;';
 
-        $array = [];
-        array_push($array, $vkey);
+        $array = array($vkey);
 
         $this->db->query($sql);
         $this->db->bind($array);
@@ -49,8 +48,7 @@ class LoginModel {
     public function emailExist($data) {
         $sql = 'SELECT * FROM user WHERE Email = ?;';
 
-        $array = [];
-        array_push($array, $data);
+        $array = array($data['email']);
 
         $this->db->query($sql);
         $this->db->bind($array);
@@ -66,8 +64,7 @@ class LoginModel {
     public function userNameExist($data) {
         $sql = 'SELECT * FROM user WHERE Username = ?;';
 
-        $array = [];
-        array_push($array, $data['username']);
+        $array = array($data['username']);
 
         $this->db->query($sql);
         $this->db->bind($array);
@@ -84,8 +81,7 @@ class LoginModel {
     public function registration($data) {
         $sql = 'INSERT INTO user (Username,Email,Password,Vkey) VALUES (?,?,?,?)';
 
-        $array = [];
-        array_push($array, $data['username'], $data['email'], $data['password'], $data['vkey']);
+        $array = array($data['username'], $data['email'], $data['password'], $data['vkey']);
 
         $this->db->query($sql);
         $this->db->bind($array);
@@ -100,8 +96,7 @@ class LoginModel {
     public function login($data) {
         $sql = 'SELECT * FROM user WHERE Email = ?;';
 
-        $array = [];
-        array_push($array, $data['email']);
+        $array = array($data['email']);
 
         $this->db->query($sql);
         $this->db->bind($array);

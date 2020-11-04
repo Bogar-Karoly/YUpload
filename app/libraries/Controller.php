@@ -25,6 +25,9 @@ class Controller{
             die('The '.$imageId.'.'.$type.' image does not exists!');
         }
     }
+    public function redirect($url) {
+        header('Location: '.URL_ROOT.'/'.$url);
+    }
 }
 
 ?>

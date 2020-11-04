@@ -83,14 +83,17 @@ nav a {
     font-size: 30px;
     border-radius: 10px;
   
-  }
-  .detail, .title {
+}
+.detail, .title {
     display: inline-block;
-  }
-  .detail {
+}
+.detail {
     background-color: purple;
     max-width: 0;
     overflow: hidden;
     transition: max-width 0.2s ease-out;
     /*transition: width 600ms ease-out, height 600ms ease-out;*/
-  }
+}
+.errors {
+    background-color: white;
+}

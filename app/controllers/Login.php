@@ -5,7 +5,7 @@ class Login extends Controller{
     public $error = [];
 
     public function __construct() {
-        $this->userModel = $this->model('LoginModel');
+        $this->loginModel = $this->model('LoginModel');
     }
 
     private function sendPasswordRecovery($email, $password) {
@@ -35,7 +35,7 @@ class Login extends Controller{
             else if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
                 $this->error['passRecovery'] = 'Invalid Email Address!';
             }
-            else if(!$this->userModel->emailExist($email)) {
+            else if(!$this->loginModel->emailExist($email)) {
                 $this->error['passRecovery'] = 'Email doesn\'t exists!';
             }
 
@@ -48,7 +48,7 @@ class Login extends Controller{
 
                 $hashedPassword = password_hash($newPassword,PASSWORD_DEFAULT);
                 
-                if($this->userModel->setNewPassword($email,$hashedPassword))  {
+                if($this->loginModel->setNewPassword($email,$hashedPassword))  {
                     if($this->sendPasswordRecovery($email,$newPassword)) {
                         $this->view('Verification',null);
                         exit();
@@ -73,7 +73,7 @@ class Login extends Controller{
         if(empty($data)) {
             $this->error['confirmError'] = 'Empty link';
         }
-        else if(!$this->userModel->verify($data)) {
+        else if(!$this->loginModel->verify($data)) {
             $this->error['confirmError'] = 'Verification failed';
         }
 
@@ -89,7 +89,6 @@ class Login extends Controller{
     }
 
     private function sendVerification($vkey, $email) {
-        //the method:
 
         //params
         $subject = 'Email Verifictaion';
@@ -106,81 +105,77 @@ class Login extends Controller{
     }
 
     public function registration() {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            //Validations
-            $nameValidation = "/^[a-zA-Z0-9]*$/";
-            $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
+        if (isLoggedIn()) {
+            $this->redirect('home/index');
+        }else {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $data = [
-                'username' => trim($_POST['username']),
-                'email' => trim($_POST['email']),
-                'password' => trim($_POST['password']),
-                'passwordRepeat' => trim($_POST['passwordRepeat'])
-            ];
+                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            //Validate username
-            if(empty($data['username'])) {
-                $this->error['username'] = "Username cannot be empty!";
-            }
-            else if(strlen($data['username']) < 3) {
-                $this->error['username'] = "Username must be atleast three character long!";
-            }
-            else if(!preg_match($nameValidation,$data['username'])) {
-                $this->error['username'] = "Username cannot contains special characters!";
-            }
-            else if($this->userModel->userNameExist($data)) {
-                $this->error['username'] = "Username is already in use!";
-            }
+                //Validations
+                $nameValidation = "/^[a-zA-Z0-9]*$/";
+                $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
 
-            //Validate email
-            if(empty($data['email'])) {
-                $this->error['email'] = "Email address cannot be empty!";
-            }
-            else if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                $this->error['email'] = "Email address is not valid!";
-            }
-            else if($this->userModel->emailExist($data)) {
-                $this->error['username'] = "Email is already in use!";
-            }
+                $data = [
+                    'username' => trim($_POST['username']),
+                    'email' => trim($_POST['email']),
+                    'password' => trim($_POST['password']),
+                    'passwordRepeat' => trim($_POST['passwordRepeat'])
+                ];
 
-            //Validate password
-            if(empty($data['password'])) {
-                $this->error['password'] = "Password cannot be empty!";
-            }
-            else if(strlen($data['password']) < 8) {
-                $this->error['password'] = "Password must be atleast eight character long!";
-            }
-            else if(preg_match($passwordValidation,$data['password'])) {
-                $this->error['password'] = "Password must contains atleast one number!";
-            }
-            
-            //Validate passwordRepeat
-            if(empty($data['passwordRepeat'])) {
-                $this->error['passwordRepeat'] = "Password confirmation cannot be empty!";
-            }
-            else if($data['passwordRepeat'] != $data['password']) {
-                $this->error['passwordRepeat'] = "Passwords do not match!";
-            }
-
-            //check for errors
-            if(empty($this->error)) {
-                //hash password
-                $data['password'] = password_hash($data['password'],PASSWORD_DEFAULT);
-                //verification key
-                $data['vkey'] = md5(time().$data['username']);
-
-                if($this->userModel->registration($data)) {
-                    //send email on success
-                    if($this->sendVerification($data['vkey'],$data['email'])) {
-                        $this->view('Verification',$data);
-                        //$this->view('EmailVerification',$data);
-                        header('Location: '.URL_ROOT.'/Home/index');
-                    }
-                    //error
+                //Validate username
+                if (empty($data['username'])) {
+                    $this->error['username'] = "Username cannot be empty!";
+                } elseif (strlen($data['username']) < 3) {
+                    $this->error['username'] = "Username must be atleast three character long!";
+                } elseif (!preg_match($nameValidation, $data['username'])) {
+                    $this->error['username'] = "Username cannot contains special characters!";
+                } elseif ($this->loginModel->userNameExist($data)) {
+                    $this->error['username'] = "Username is already in use!";
                 }
-                else {
-                    die('Something went wrong!');
+
+                //Validate email
+                if (empty($data['email'])) {
+                    $this->error['email'] = "Email address cannot be empty!";
+                } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                    $this->error['email'] = "Email address is not valid!";
+                } elseif ($this->loginModel->emailExist($data)) {
+                    $this->error['username'] = "Email is already in use!";
+                }
+
+                //Validate password
+                if (empty($data['password'])) {
+                    $this->error['password'] = "Password cannot be empty!";
+                } elseif (strlen($data['password']) < 8) {
+                    $this->error['password'] = "Password must be atleast eight character long!";
+                } elseif (preg_match($passwordValidation, $data['password'])) {
+                    $this->error['password'] = "Password must contains atleast one number!";
+                }
+            
+                //Validate passwordRepeat
+                if (empty($data['passwordRepeat'])) {
+                    $this->error['passwordRepeat'] = "Password confirmation cannot be empty!";
+                } elseif ($data['passwordRepeat'] != $data['password']) {
+                    $this->error['passwordRepeat'] = "Passwords do not match!";
+                }
+
+                //check for errors
+                if (empty($this->error)) {
+                    //hash password
+                    $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+                    //verification key
+                    $data['vkey'] = md5(time().$data['username']);
+
+                    //regist the user
+                    if ($this->loginModel->registration($data)) {
+                        //send email on success
+                        if ($this->sendVerification($data['vkey'], $data['email'])) {
+                            $this->view('Verification', null);
+                            exit();
+                        }
+                    } else {
+                        $this->error['regist'] = 'Something went wrong, please try again later!';
+                    }
                 }
             }
         }
@@ -188,46 +183,40 @@ class Login extends Controller{
     }
 
     public function login() {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        if (isLoggedIn()) {
+            $this->redirect('home/index');
+        } else {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            $data = [
-                'email' => trim($_POST['email']),
-                'password' => trim($_POST['password'])
-            ];
+                $data = [
+                    'email' => trim($_POST['email']),
+                    'password' => trim($_POST['password'])
+                ];
             
-            if(empty($data['email'])) {
-                $this->error['email'] = 'Please enter the email address!';
-            }
-            if(empty($data['password'])) {
-                $this->error['password'] = 'Please enter the password!';
-            }
-            if(empty($this->error)) {
-                $result = $this->userModel->login($data);
+                if (empty($data['email'])) {
+                    $this->error['email'] = 'Please enter the email address!';
+                }
+                if (empty($data['password'])) {
+                    $this->error['password'] = 'Please enter the password!';
+                }
+                if (empty($this->error)) {
+                    $result = $this->loginModel->login($data);
 
-                if($result) {
-                    if($result['Verified'] == true) {
-                        $this->createSession($result);
-                    } 
-                    else 
-                    {
-                        if(!$this->sendVerification($result['Vkey'],$result['Email'])) {
-                            $this->view('Verification',null);
+                    if ($result) {
+                        if ($result['Verified'] == true) {
+                            $this->createSession($result);
+                        } else {
+                            if (!$this->sendVerification($result['Vkey'], $result['Email'])) {
+                                $this->view('Verification', null);
+                            } else {
+                                $this->redirect('home/index');
+                            }
                         }
-                        else
-                        {
-                            header('Location: '.URL_ROOT.'/home/index');
-                        }
+                    } else {
+                        $this->error['email'] = 'Email or password incorrect! Please try again!';
                     }
                 }
-                else {
-                    $this->error['email'] = 'Email or password incorrect! Please try again!';
-                }
-            }
-        }
-        else {
-            if(isLoggedIn()) {
-                header('Location: '.URL_ROOT.'/home/index');
             }
         }
         $this->view('Signin',$this->error);
@@ -240,7 +229,7 @@ class Login extends Controller{
         $_SESSION['email'] = $userData['Email'];
         $_SESSION['authority'] = $userData['Authority'];
 
-        header('Location: '.URL_ROOT.'/home/index');
+        $this->redirect('home/index');
     }
 
     public function logout() {
@@ -250,7 +239,7 @@ class Login extends Controller{
         unset($_SESSION['authority']);
         session_destroy();
 
-        header('Location: '.URL_ROOT.'/home/index');
+        $this->redirect('home/index');
     }
 }
 
