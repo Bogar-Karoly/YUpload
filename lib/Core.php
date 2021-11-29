@@ -14,8 +14,6 @@ class Core {
         }
 
         require_once '../app/controllers/'.$this->currentController.'.php';
-        //echo 'this';
-        //print_r($url);
 
         $this->currentController = new $this->currentController;
 
@@ -29,7 +27,6 @@ class Core {
         $this->params = $url ? array_values($url) : [];
 
         call_user_func_array([$this->currentController,$this->currentMethod],$this->params);
-        //echo 'asd';
     }
     private function getUrl() {
         if(isset($_GET['url'])) {

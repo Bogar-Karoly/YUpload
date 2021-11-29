@@ -1,0 +1,117 @@
+:root {
+    --background: #202024;
+    --main-grey: rgba(17, 17, 17, 0.9);
+    --secondary-grey: rgba(17, 17, 17, 0.9);
+    --light-grey: #3c3c44;
+    --gold: #965f33;
+    --offWhite: #e6e6e6;
+    --hover: rgba(255, 255, 255, 0.25);
+  }
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    overflow-x: hidden;
+}
+.container {
+    padding-top: 40px;
+}
+* {
+    margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+nav {
+    /*margin-left: auto;
+    margin-right: 0;*/
+    left: auto;
+    right: 0px;
+
+
+    width: 500px;
+    background-color: purple;
+
+    border-bottom-left-radius: 20px;
+
+    position: fixed;
+}
+nav ul {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    list-style: none;
+    border: 1px solid red;
+}
+nav a {
+    height: 50px;
+    
+    float: right;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    border: 1px solid purple;
+
+    display: block;
+
+    padding: 0px 5px 0px 5px;
+    text-decoration: none;
+    font-size: 30px;
+}
+/*
+nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 8vh;
+    background-color: var(--main-grey);
+    border-bottom: 6px solid var(--gold);
+    width: 100%;
+    position: fixed;
+    
+    position: fixed;
+    width: 100%;
+    background-color: green;
+    overflow: hidden;
+    border: 1px solid black;
+
+    height: 50px;
+}
+nav ul {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    list-style: none;
+    border: 1px solid red;
+} 
+nav a {
+    height: 50px;
+    
+    float: left;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    border: 1px solid purple;
+
+    display: block;
+
+    padding: 0px 5px 0px 5px;
+    text-decoration: none;
+    font-size: 30px;
+}
+.btn-right {
+    float: right;
+    font-size: 10px;
+}
+i {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.btn-right input {
+    border-radius: 10px;
+    border: none;
+
+    background-color: rgb(116, 111, 111);
+    height: 30px;
+    margin: 10px 0px 10px 0px ;
+
+}
+ul li {
+    background-color: white;
+    vertical-align: middle;
+}
+*/
