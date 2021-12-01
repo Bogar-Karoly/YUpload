@@ -2,69 +2,64 @@
 
 class Database {
 
-    private $conn;
-    private $stmt;
-    private $error;
+    private static $conn;   // database connection
+    private static $stmt;   // sql statement
 
-    public function __construct() {
-        $host = DB_HOST;
-        $user = DB_USER;
-        $pass = DB_PASS;
-        $name = DB_NAME;
-
-        $this->conn = new mysqli($host,$user,$pass,$name) or $this->error ='The {$this->name} database does not exists!';
+    // connects to database
+    function __construct() {
+        self::$conn = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME) or die("Database doesn't exists!");
     }
 
-    public function result() {
-        return mysqli_fetch_assoc($this->stmt->get_result());
-    }
-
-    public function execute() {
-        return $this->stmt->execute();
-    }
-
-    public function bind($data) {
-        $param = '';
-        foreach ($data as $key => $value) {
-            switch($value) {
-                //case is_bool($value): $param = PDO::PARAM_BOOL; break;
-                case is_double($value): $param .= 'd'; break;
-                case is_int($value): $param .= 'i'; break;
-                //case is_null($value): $param .= PDO::PARAM_NULL; break;
-                default: $param .= 's'; break;
-            }
+    // executes sql command, also binds params when needed
+    public static function execute($params = []) {
+        if(!empty($params)) {
+            $type = implode('',array_map(function($e) { 
+                switch(gettype($e)) {
+                    case "string": return "s";
+                    case "integer": return "s";
+                    case "double": return "d";
+                    default: return 's';
+                }
+            },$params));
+            self::$stmt->bind_param($type, ...$params);
         }
-        $this->stmt->bind_param($param, ...$data);
+        return self::$stmt->execute();
     }
 
-    public function query($sql) {
-        $this->stmt = $this->conn->prepare($sql);
+    // prepares sql command
+    public static function prepare($sql) {
+        self::$stmt = self::$conn->prepare($sql);
+        if(self::$stmt === false)
+            return false;
+        return true;
     }
 
-    /*
-    public function query($sql,$array) {
-
-        $types = $this->bindType($array);
-
-        $stmt = $this->conn->stmt_init();
-        $stmt->prepare($sql);
-
-        $stmt->bind_param($types, ...$array);
-        $stmt->execute();
-        
-        $result = $stmt->get_result();
-        $data = $result->fetch_assoc();
-
-        $stmt->close();
-        $this->conn->close();
-
-        return $data;
+    // returns all rows
+    public static function all() {
+        $result = self::$stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
-    
-    public function execute() {
-        return $this->command->execute();
+
+    // get query result, like num_rows, field_count...
+    public static function getResult() {
+        return self::$stmt->get_result();
     }
-    */
+
+    // get first row from query
+    public static function getFirst() {
+        return mysqli_fetch_assoc(self::$stmt->get_result());
+    }
+
+    // get last inserted row id
+    public static function getLastId() {
+        return self::$stmt->insert_id;
+    }
+
+    // closes database connection
+    function __destruct() {
+        self::$stmt->close();
+        self::$conn->close();
+    }
 }
 
 ?>
