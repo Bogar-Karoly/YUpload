@@ -1,5 +1,5 @@
 <?php
-    phpinfo();
-require_once '../app/require.php';
+    session_start();
+    require_once '../lib/require.php';
 
 ?>

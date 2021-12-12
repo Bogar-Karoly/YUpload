@@ -4,10 +4,13 @@ class Validator {
     function __construct() {
         $this->error = new UserError();
     }
-    public function validate($rules, $data, $deep = false) { // deep means that it will try to search in sub objects
+    public function getErrors() {
+        return  $this->error->get();
+    }
+    public function validate($rules, $data) {
         // check if empty
         if(empty($data)) {
-            $this->error->addCode(111);
+            $this->error->addErrorCode(111);
             return false;
         }
         foreach($rules as $rule_key => $rule_str ) {
@@ -16,13 +19,14 @@ class Validator {
             });
             if($index === false) {
                 if(strpos($rule_str, 'required') !== false)
-                    $this->error->addCode(112);
+                    $this->error->addErrorCode(123);
                 return;
             }
             $value = array_intersect_key($data, array_flip($index));
+
             $rule_arr = !empty($rule_str) && strpos($rule_str,'|') !== false ? explode('|',$rule_str) : [$rule_str];
             foreach($rule_arr as $rule) {
-                if(!$this->_validate($rule, $value))
+                if(!$this->_validate($rule, $value[$rule_key]))
                     break;
             }
         }
@@ -31,28 +35,35 @@ class Validator {
         return true;
     }
     private function _validate($rule, $value) {
+        $rule_value = [];
+        if(strpos($rule, '-')) {
+            $rule_value = explode('-',$rule);
+            $rule = $rule_value[0];
+            $rule_value = $rule_value[1];
+        }
+            
         switch($rule) {
             case "required": 
-                if(empty($rule)) {
-                    if($value !== 0 || $value === "") {
-                        $this->error_code->add(123);
-                        return false;
-                    }
+                if(empty($value) && $value !== 0 || empty($value) && $value === "") {
+                    $this->error->addErrorCode(123);
+                    return false;
                 }
                 break;
             case "maxLength": 
-                if(empty($rule)) {
-                    if($value !== 0 || $value === "") {
-                        $this->error_code->add(123);
+                if($value !== 0 && !empty($value)) {
+                    if(strlen($value) > intval($rule_value)) {
+                        $this->error->addErrorCode(124);
                         return false;
                     }
                 }
                 break;
             case "minLength": 
-                    if($value !== 0 || $value === "") {
-                        $this->error_code->add(123);
+                if($value !== 0 && !empty($value)) {
+                    if(strlen($value) < intval($rule_value)) {
+                        $this->error->addErrorCode(125);
                         return false;
                     }
+                }
                 break;
         }
         return true;
